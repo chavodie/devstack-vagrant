@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "centos/7"
+  config.vm.box = "ubuntu/trusty64"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -67,8 +67,16 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    yum -y update
-    adduser stack
-    echo "stack ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+#    yum -y update
+    apt-get -y install git
+    git clone https://git.openstack.org/openstack-dev/devstack -b stable/mitaka
+    echo "[[local|localrc]]
+FLAT_INTERFACE=eth0
+ADMIN_PASSWORD=Acceso0
+DATABASE_PASSWORD=Acceso0
+RABBIT_PASSWORD=Acceso0
+SERVICE_PASSWORD=Acceso0
+" > devstack/local.conf
+   chown -R vagrant.vagrant devstack
   SHELL
 end
